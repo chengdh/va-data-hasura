@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import buildDataProvider from 'va-data-graphql';
+import buildDataProvider from 'vuetify-admin-data-graphql';
 import {
   GET_ONE,
   GET_LIST,

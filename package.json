@@ -1,6 +1,6 @@
 {
   "name": "va-data-hasura",
-  "version": "0.210",
+  "version": "0.1.0",
   "description": "A data provider for connecting vuetify-admin to a Hasura endpoint",
   "main": "dist/index.js",
   "sideEffects": false,
@@ -31,7 +31,7 @@
     "kind-of": ">=6.0.3",
     "lodash": "~4.17.5",
     "minimist": ">=1.2.3",
-    "va-data-graphql": "^0.1.0"
+    "vuetify-admin-data-graphql": "0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",
@@ -45,7 +45,7 @@
     "prettier": "^2.1.2",
     "pretty-quick": "^3.1.0",
     "webpack": "^4.41.4",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.12"
   },
   "husky": {
     "hooks": {
