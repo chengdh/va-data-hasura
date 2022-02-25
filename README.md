@@ -1,8 +1,8 @@
-# ra-data-hasura
+# va-data-hasura
 
-A GraphQL data provider for [react-admin](https://marmelab.com/react-admin) tailored to target [Hasura](https://hasura.io/) GraphQL endpoints.
+A GraphQL data provider for [vuetify-admin](https://github.com/okami101/vuetify-admin) tailored to target [Hasura](https://hasura.io/) GraphQL endpoints.
 
-- [ra-data-hasura](#ra-data-hasura)
+- [va-data-hasura](#va-data-hasura)
   - [Benefits and Motivation](#benefits-and-motivation)
   - [Installation](#installation)
   - [Usage](#usage)
@@ -26,7 +26,7 @@ Example applications demonstrating usage:
 
 ## Benefits and Motivation
 
-This utility is built on top of [ra-data-graphql](https://github.com/vladimiregorov/react-admin/blob/master/packages/ra-data-graphql/README.md) and is a custom data provider for the current Hasura GraphQL API format.
+This utility is built on top of [va-data-graphql](https://github.com/vladimiregorov/react-admin/blob/master/packages/ra-data-graphql/README.md) and is a custom data provider for the current Hasura GraphQL API format.
 
 The existing ra-data-graphql-simple provider, requires that your GraphQL endpoint implement a specific grammar for the objects and methods exposed, which is different with Hasura because the exposed objects and methods are generated differently.
 
@@ -37,12 +37,12 @@ This utility auto generates valid GraphQL queries based on the properties expose
 Install with:
 
 ```sh
-npm install --save graphql ra-data-hasura
+npm install --save graphql va-data-hasura
 ```
 
 ## Usage
 
-The `ra-data-hasura` package exposes a single function with the following signature:
+The `va-data-hasura` package exposes a single function with the following signature:
 
 ```js
 buildHasuraProvider(
