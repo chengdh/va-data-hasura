@@ -40,15 +40,15 @@ export { buildQuery, buildGqlQuery, buildVariables };
 const defaultOptions = {
   introspection: {
     operationNames: {
-      [sanitizeFetchType(GET_LIST)]: (resource) => `${resource.name}`,
-      [sanitizeFetchType(GET_ONE)]: (resource) => `${resource.name}`,
-      [sanitizeFetchType(GET_MANY)]: (resource) => `${resource.name}`,
-      [sanitizeFetchType(GET_MANY_REFERENCE)]: (resource) => `${resource.name}`,
-      [sanitizeFetchType(CREATE)]: (resource) => `insert_${resource.name}`,
-      [sanitizeFetchType(UPDATE)]: (resource) => `update_${resource.name}`,
-      [sanitizeFetchType(UPDATE_MANY)]: (resource) => `update_${resource.name}`,
-      [sanitizeFetchType(DELETE)]: (resource) => `delete_${resource.name}`,
-      [sanitizeFetchType(DELETE_MANY)]: (resource) => `delete_${resource.name}`,
+      [GET_LIST]: (resource) => `${resource.name}`,
+      [GET_ONE]: (resource) => `${resource.name}`,
+      [GET_MANY]: (resource) => `${resource.name}`,
+      [GET_MANY_REFERENCE]: (resource) => `${resource.name}`,
+      [CREATE]: (resource) => `insert_${resource.name}`,
+      [UPDATE]: (resource) => `update_${resource.name}`,
+      [UPDATE_MANY]: (resource) => `update_${resource.name}`,
+      [DELETE]: (resource) => `delete_${resource.name}`,
+      [DELETE_MANY]: (resource) => `delete_${resource.name}`,
     },
   },
 };

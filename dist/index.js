@@ -14708,31 +14708,31 @@ module.exports = (function (e) {
     'use strict';
     n.r(t),
       n.d(t, 'buildFields', function () {
-        return Wi;
+        return Xi;
       }),
       n.d(t, 'buildMetaArgs', function () {
-        return Zi;
-      }),
-      n.d(t, 'buildArgs', function () {
-        return Hi;
-      }),
-      n.d(t, 'buildApolloArgs', function () {
         return eo;
       }),
-      n.d(t, 'defaultBuildVariables', function () {
-        return Gi;
+      n.d(t, 'buildArgs', function () {
+        return Zi;
       }),
-      n.d(t, 'defaultGetResponseParser', function () {
-        return qi;
-      }),
-      n.d(t, 'buildQuery', function () {
-        return ro;
-      }),
-      n.d(t, 'buildGqlQuery', function () {
+      n.d(t, 'buildApolloArgs', function () {
         return to;
       }),
+      n.d(t, 'defaultBuildVariables', function () {
+        return Ui;
+      }),
+      n.d(t, 'defaultGetResponseParser', function () {
+        return Bi;
+      }),
+      n.d(t, 'buildQuery', function () {
+        return io;
+      }),
+      n.d(t, 'buildGqlQuery', function () {
+        return no;
+      }),
       n.d(t, 'buildVariables', function () {
-        return Gi;
+        return Ui;
       });
     var r = n(56),
       i = n.n(r),
@@ -22758,17 +22758,41 @@ module.exports = (function (e) {
           return Promise.resolve({ data: [] });
         },
       };
-    var ki = n(41),
-      Ai = n.n(ki),
-      Li = n(134),
-      xi = n.n(Li),
-      Pi = n(286);
-    const Fi = (e) =>
-      e.kind === Pi.TypeKind.NON_NULL || e.kind === Pi.TypeKind.LIST
-        ? Fi(e.ofType)
+    const ki = (e) => {
+      switch (e) {
+        case 'GET_LIST':
+          return 'getList';
+        case 'GET_ONE':
+          return 'getOne';
+        case 'GET_MANY':
+          return 'getMany';
+        case 'GET_MANY_REFERENCE':
+          return 'getManyReference';
+        case 'CREATE':
+          return 'create';
+        case 'UPDATE':
+          return 'update';
+        case 'UPDATE_MANY':
+          return 'updateMany';
+        case 'DELETE':
+          return 'delete';
+        case 'DELETE_MANY':
+          return 'deleteMany';
+        default:
+          return e;
+      }
+    };
+    var Ai = n(41),
+      Li = n.n(Ai),
+      xi = n(134),
+      Pi = n.n(xi),
+      Fi = n(286);
+    const Mi = (e) =>
+      e.kind === Fi.TypeKind.NON_NULL || e.kind === Fi.TypeKind.LIST
+        ? Mi(e.ofType)
         : e;
-    var Mi = Fi;
-    const Ri = (e) => (e, t, n) => {
+    var Ri = Mi;
+    const Vi = (e) => (e, t, n) => {
         const r = {};
         let { filter: i = {} } = n;
         const { customFilters: o = [] } = n,
@@ -22780,7 +22804,7 @@ module.exports = (function (e) {
             }),
             {}
           );
-        i = xi()(i, a);
+        i = Pi()(i, a);
         const s = (t) => (n, r) => {
             let i;
             if ('ids' === r) i = { id: { _in: t.ids } };
@@ -22792,19 +22816,19 @@ module.exports = (function (e) {
                 [o, a = ''] = r.split('@');
               const u = e.type.fields.find((e) => e.name === o);
               if (u)
-                switch (Mi(u.type).name) {
+                switch (Ri(u.type).name) {
                   case 'String':
                     (a = a || '_ilike'),
                       (n = { [a]: a.includes('like') ? `%${t[r]}%` : t[r] }),
-                      (i = Ai()({}, o.split('#'), n));
+                      (i = Li()({}, o.split('#'), n));
                     break;
                   default:
                     (n = { [a]: a.includes('like') ? `%${t[r]}%` : t[r] }),
-                      (i = Ai()({}, o.split('#'), { [a || '_eq']: t[r] }));
+                      (i = Li()({}, o.split('#'), { [a || '_eq']: t[r] }));
                 }
               else
                 (n = { [a || '_eq']: a.includes('like') ? `%${t[r]}%` : t[r] }),
-                  (i = Ai()({}, o.split('#'), n));
+                  (i = Li()({}, o.split('#'), n));
             }
             return [...n, i];
           },
@@ -22819,11 +22843,11 @@ module.exports = (function (e) {
               10
             ))),
           n.sort &&
-            (r.order_by = Ai()({}, n.sort.field, n.sort.order.toLowerCase())),
+            (r.order_by = Li()({}, n.sort.field, n.sort.order.toLowerCase())),
           r
         );
       },
-      Vi = (e, t, n) => (r, i) => {
+      Ci = (e, t, n) => (r, i) => {
         const o = e.types
             .find((e) => e.name === t.type.name)
             .fields.find((e) => e.name === i),
@@ -22833,8 +22857,8 @@ module.exports = (function (e) {
               : n.data[i];
         return t.type.fields.some((e) => e.name === i) ? { ...r, [i]: a } : r;
       },
-      Ci = (e) => (t, n, r, i) => {
-        const o = Vi(e, t, r);
+      Qi = (e) => (t, n, r, i) => {
+        const o = Ci(e, t, r);
         let a = null;
         const u = t.type.name;
         if (u) {
@@ -22853,24 +22877,24 @@ module.exports = (function (e) {
           {}
         );
       },
-      Qi = (e) => (t, n, r, i) => {
-        const o = Vi(e, t, r);
+      Ki = (e) => (t, n, r, i) => {
+        const o = Ci(e, t, r);
         return Object.keys(r.data).reduce(o, {});
       },
-      Ki = (e, t) =>
+      Gi = (e, t) =>
         e
           .split('.')
           .reverse()
           .reduce((e, t) => ({ [t]: e }), { _eq: t });
-    var Gi = (e) => (t, n, r, i) => {
+    var Ui = (e) => (t, n, r, i) => {
       switch (n) {
         case 'GET_LIST':
-          return Ri()(t, n, r, i);
+          return Vi()(t, n, r, i);
         case 'GET_MANY_REFERENCE':
-          var o = Ri()(t, n, r, i);
+          var o = Vi()(t, n, r, i);
           return r.filter
-            ? { ...o, where: { _and: [...o.where._and, Ki(r.target, r.id)] } }
-            : { ...o, where: Ki(r.target, r.id) };
+            ? { ...o, where: { _and: [...o.where._and, Gi(r.target, r.id)] } }
+            : { ...o, where: Gi(r.target, r.id) };
         case 'GET_MANY':
         case 'DELETE_MANY':
           return { where: { id: { _in: r.ids } } };
@@ -22879,14 +22903,14 @@ module.exports = (function (e) {
         case 'DELETE':
           return { where: { id: { _eq: r.id } } };
         case 'CREATE':
-          return { objects: Qi(e)(t, n, r, i) };
+          return { objects: Ki(e)(t, n, r, i) };
         case 'UPDATE':
-          return { _set: Ci(e)(t, n, r, i), where: { id: { _eq: r.id } } };
+          return { _set: Qi(e)(t, n, r, i), where: { id: { _eq: r.id } } };
         case 'UPDATE_MANY':
-          return { _set: Ci(e)(t, n, r, i), where: { id: { _in: r.ids } } };
+          return { _set: Qi(e)(t, n, r, i), where: { id: { _in: r.ids } } };
       }
     };
-    const Ui = (e = {}) =>
+    const qi = (e = {}) =>
       Object.keys(e).reduce((t, n) => {
         if (n.startsWith('_')) return t;
         const r = e[n];
@@ -22895,27 +22919,27 @@ module.exports = (function (e) {
           : Array.isArray(r)
           ? r[0] && 'object' == typeof r[0]
             ? null != r[0].id
-              ? { ...t, [n]: r.map(Ui), [n + 'Ids']: r.map((e) => e.id) }
-              : { ...t, [n]: r.map(Ui) }
+              ? { ...t, [n]: r.map(qi), [n + 'Ids']: r.map((e) => e.id) }
+              : { ...t, [n]: r.map(qi) }
             : { ...t, [n]: r }
           : 'object' == typeof r
-          ? { ...t, ...(r && r.id && { [n + '.id']: r.id }), [n]: Ui(r) }
+          ? { ...t, ...(r && r.id && { [n + '.id']: r.id }), [n]: qi(r) }
           : { ...t, [n]: r };
       }, {});
-    var qi = (e) => (e, t) => (t) => {
+    var Bi = (e) => (e, t) => (t) => {
         const n = t.data;
         switch (e) {
           case 'GET_MANY_REFERENCE':
           case 'GET_LIST':
-            return { data: n.items.map(Ui), total: n.total.aggregate.count };
+            return { data: n.items.map(qi), total: n.total.aggregate.count };
           case 'GET_MANY':
-            return { data: n.items.map(Ui) };
+            return { data: n.items.map(qi) };
           case 'GET_ONE':
-            return { data: Ui(n.returning[0]) };
+            return { data: qi(n.returning[0]) };
           case 'CREATE':
           case 'UPDATE':
           case 'DELETE':
-            return { data: Ui(n.data.returning[0]) };
+            return { data: qi(n.data.returning[0]) };
           case 'UPDATE_MANY':
           case 'DELETE_MANY':
             return { data: n.data.returning.map((e) => e.id) };
@@ -22923,40 +22947,40 @@ module.exports = (function (e) {
             throw Error('Expected a propper fetchType, got: ', e);
         }
       },
-      Bi = n(0);
-    const Yi = (e) =>
-      e.kind === Pi.TypeKind.NON_NULL
-        ? Yi(e.ofType)
-        : e.kind === Pi.TypeKind.LIST;
-    var $i = Yi;
-    const zi = (e) =>
-      e.kind === Pi.TypeKind.LIST
-        ? zi(e.ofType)
-        : e.kind === Pi.TypeKind.NON_NULL;
-    var Ji = zi;
-    const Wi = (e) =>
+      Yi = n(0);
+    const $i = (e) =>
+      e.kind === Fi.TypeKind.NON_NULL
+        ? $i(e.ofType)
+        : e.kind === Fi.TypeKind.LIST;
+    var zi = $i;
+    const Ji = (e) =>
+      e.kind === Fi.TypeKind.LIST
+        ? Ji(e.ofType)
+        : e.kind === Fi.TypeKind.NON_NULL;
+    var Wi = Ji;
+    const Xi = (e) =>
         e.fields.reduce((e, t) => {
-          const n = Mi(t.type);
-          return n.kind !== Pi.TypeKind.OBJECT &&
-            n.kind !== Pi.TypeKind.INTERFACE
-            ? [...e, Bi.field(Bi.name(t.name))]
+          const n = Ri(t.type);
+          return n.kind !== Fi.TypeKind.OBJECT &&
+            n.kind !== Fi.TypeKind.INTERFACE
+            ? [...e, Yi.field(Yi.name(t.name))]
             : e;
         }, []),
-      Xi = (e) => {
-        const t = Mi(e.type),
-          n = Ji(e.type),
-          r = $i(e.type);
+      Hi = (e) => {
+        const t = Ri(e.type),
+          n = Wi(e.type),
+          r = zi(e.type);
         return n
           ? r
-            ? Bi.nonNullType(
-                Bi.listType(Bi.nonNullType(Bi.namedType(Bi.name(t.name))))
+            ? Yi.nonNullType(
+                Yi.listType(Yi.nonNullType(Yi.namedType(Yi.name(t.name))))
               )
-            : Bi.nonNullType(Bi.namedType(Bi.name(t.name)))
+            : Yi.nonNullType(Yi.namedType(Yi.name(t.name)))
           : r
-          ? Bi.listType(Bi.namedType(Bi.name(t.name)))
-          : Bi.namedType(Bi.name(t.name));
+          ? Yi.listType(Yi.namedType(Yi.name(t.name)))
+          : Yi.namedType(Yi.name(t.name));
       },
-      Hi = (e, t) => {
+      Zi = (e, t) => {
         if (0 === e.args.length) return [];
         const n = Object.keys(t).filter((e) => void 0 !== t[e]);
         return e.args
@@ -22964,12 +22988,12 @@ module.exports = (function (e) {
           .reduce(
             (e, t) => [
               ...e,
-              Bi.argument(Bi.name(t.name), Bi.variable(Bi.name(t.name))),
+              Yi.argument(Yi.name(t.name), Yi.variable(Yi.name(t.name))),
             ],
             []
           );
       },
-      Zi = (e, t, n) => {
+      eo = (e, t, n) => {
         if (0 === e.args.length) return [];
         const r = Object.keys(t).filter((e) =>
           'GET_LIST' === n || 'GET_MANY' === n || 'GET_MANY_REFERENCE' === n
@@ -22981,12 +23005,12 @@ module.exports = (function (e) {
           .reduce(
             (e, t) => [
               ...e,
-              Bi.argument(Bi.name(t.name), Bi.variable(Bi.name(t.name))),
+              Yi.argument(Yi.name(t.name), Yi.variable(Yi.name(t.name))),
             ],
             []
           );
       },
-      eo = (e, t) => {
+      to = (e, t) => {
         if (0 === e.args.length) return [];
         const n = Object.keys(t).filter((e) => void 0 !== t[e]);
         return e.args
@@ -22994,12 +23018,12 @@ module.exports = (function (e) {
           .reduce(
             (e, t) => [
               ...e,
-              Bi.variableDefinition(Bi.variable(Bi.name(t.name)), Xi(t)),
+              Yi.variableDefinition(Yi.variable(Yi.name(t.name)), Hi(t)),
             ],
             []
           );
       },
-      to = (e, t, n, r, i, o) => (e, a, u, s) => {
+      no = (e, t, n, r, i, o) => (e, a, u, s) => {
         const { sortField: c, sortOrder: l, ...f } = s,
           p = i(u, s),
           d = r(u, s),
@@ -23008,34 +23032,34 @@ module.exports = (function (e) {
         return 'GET_LIST' === a ||
           'GET_MANY' === a ||
           'GET_MANY_REFERENCE' === a
-          ? Bi.document([
-              Bi.operationDefinition(
+          ? Yi.document([
+              Yi.operationDefinition(
                 'query',
-                Bi.selectionSet([
-                  Bi.field(
-                    Bi.name(u.name),
-                    Bi.name('items'),
+                Yi.selectionSet([
+                  Yi.field(
+                    Yi.name(u.name),
+                    Yi.name('items'),
                     d,
                     null,
-                    Bi.selectionSet(y)
+                    Yi.selectionSet(y)
                   ),
-                  Bi.field(
-                    Bi.name(o(u.name)),
-                    Bi.name('total'),
+                  Yi.field(
+                    Yi.name(o(u.name)),
+                    Yi.name('total'),
                     h,
                     null,
-                    Bi.selectionSet([
-                      Bi.field(
-                        Bi.name('aggregate'),
+                    Yi.selectionSet([
+                      Yi.field(
+                        Yi.name('aggregate'),
                         null,
                         null,
                         null,
-                        Bi.selectionSet([Bi.field(Bi.name('count'))])
+                        Yi.selectionSet([Yi.field(Yi.name('count'))])
                       ),
                     ])
                   ),
                 ]),
-                Bi.name(u.name),
+                Yi.name(u.name),
                 p
               ),
             ])
@@ -23044,48 +23068,48 @@ module.exports = (function (e) {
             'UPDATE_MANY' === a ||
             'DELETE' === a ||
             'DELETE_MANY' === a
-          ? Bi.document([
-              Bi.operationDefinition(
+          ? Yi.document([
+              Yi.operationDefinition(
                 'mutation',
-                Bi.selectionSet([
-                  Bi.field(
-                    Bi.name(u.name),
-                    Bi.name('data'),
+                Yi.selectionSet([
+                  Yi.field(
+                    Yi.name(u.name),
+                    Yi.name('data'),
                     d,
                     null,
-                    Bi.selectionSet([
-                      Bi.field(
-                        Bi.name('returning'),
+                    Yi.selectionSet([
+                      Yi.field(
+                        Yi.name('returning'),
                         null,
                         null,
                         null,
-                        Bi.selectionSet(y)
+                        Yi.selectionSet(y)
                       ),
                     ])
                   ),
                 ]),
-                Bi.name(u.name),
+                Yi.name(u.name),
                 p
               ),
             ])
-          : Bi.document([
-              Bi.operationDefinition(
+          : Yi.document([
+              Yi.operationDefinition(
                 'query',
-                Bi.selectionSet([
-                  Bi.field(
-                    Bi.name(u.name),
-                    Bi.name('returning'),
+                Yi.selectionSet([
+                  Yi.field(
+                    Yi.name(u.name),
+                    Yi.name('returning'),
                     d,
                     null,
-                    Bi.selectionSet(y)
+                    Yi.selectionSet(y)
                   ),
                 ]),
-                Bi.name(u.name),
+                Yi.name(u.name),
                 p
               ),
             ]);
       };
-    const no = (e, t, n) => (r) => {
+    const ro = (e, t, n) => (r) => {
       const i = r.resources.map((e) => e.type.name);
       return (o, a, u) => {
         const s = r.resources.find((e) => e.type.name === a);
@@ -23112,35 +23136,35 @@ module.exports = (function (e) {
         };
       };
     };
-    var ro = no(Gi, (e) => to(e, Wi, Zi, Hi, eo), qi);
-    const io = {
+    var io = ro(Ui, (e) => no(e, Xi, eo, Zi, to), Bi);
+    const oo = {
         introspection: {
           operationNames: {
-            GET_LIST: (e) => '' + e.name,
-            GET_ONE: (e) => '' + e.name,
-            GET_MANY: (e) => '' + e.name,
-            GET_MANY_REFERENCE: (e) => '' + e.name,
-            CREATE: (e) => 'insert_' + e.name,
-            UPDATE: (e) => 'update_' + e.name,
-            UPDATE_MANY: (e) => 'update_' + e.name,
-            DELETE: (e) => 'delete_' + e.name,
-            DELETE_MANY: (e) => 'delete_' + e.name,
+            [ki('GET_LIST')]: (e) => '' + e.name,
+            [ki('GET_ONE')]: (e) => '' + e.name,
+            [ki('GET_MANY')]: (e) => '' + e.name,
+            [ki('GET_MANY_REFERENCE')]: (e) => '' + e.name,
+            [ki('CREATE')]: (e) => 'insert_' + e.name,
+            [ki('UPDATE')]: (e) => 'update_' + e.name,
+            [ki('UPDATE_MANY')]: (e) => 'update_' + e.name,
+            [ki('DELETE')]: (e) => 'delete_' + e.name,
+            [ki('DELETE_MANY')]: (e) => 'delete_' + e.name,
           },
         },
       },
-      oo = {
-        buildFields: Wi,
-        buildMetaArgs: Zi,
-        buildArgs: Hi,
-        buildApolloArgs: eo,
+      ao = {
+        buildFields: Xi,
+        buildMetaArgs: eo,
+        buildArgs: Zi,
+        buildApolloArgs: to,
         aggregateFieldName: (e) => e + '_aggregate',
       };
-    t.default = (e, t = {}, n = Gi, r = qi) => {
-      const o = { ...oo, ...t },
-        a = no(
+    t.default = (e, t = {}, n = Ui, r = Bi) => {
+      const o = { ...ao, ...t },
+        a = ro(
           n,
           (e) =>
-            to(
+            no(
               e,
               o.buildFields,
               o.buildMetaArgs,
@@ -23150,7 +23174,7 @@ module.exports = (function (e) {
             ),
           r
         );
-      return Ii(i()({}, io, { buildQuery: a }, e));
+      return Ii(i()({}, oo, { buildQuery: a }, e));
     };
   },
   ,
