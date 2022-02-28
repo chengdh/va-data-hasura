@@ -86,14 +86,11 @@ const buildCustomDataProvider = (
     customBuildGqlQuery,
     customGetResponseParser
   );
-
-  return buildDataProvider(
-    merge({}, defaultOptions, { buildQuery }, options)
-  ).then((dataProvider) => {
-    return (fetchType, resource, params) => {
-      return dataProvider(fetchType, resource, params);
-    };
-  });
+  return buildDataProvider(merge({}, defaultOptions, { buildQuery }, options));
+  // .then((dataProvider) => {
+  //   return (fetchType, resource, params) => {
+  //     return dataProvider(fetchType, resource, params);
+  //   };
 };
 
 export default buildCustomDataProvider;
