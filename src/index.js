@@ -1,6 +1,7 @@
 import merge from 'lodash/merge';
 import buildDataProvider from 'vuetify-admin-data-graphql';
 import {
+  sanitizeFetchType,
   GET_ONE,
   GET_LIST,
   GET_MANY,
@@ -39,15 +40,15 @@ export { buildQuery, buildGqlQuery, buildVariables };
 const defaultOptions = {
   introspection: {
     operationNames: {
-      [GET_LIST]: (resource) => `${resource.name}`,
-      [GET_ONE]: (resource) => `${resource.name}`,
-      [GET_MANY]: (resource) => `${resource.name}`,
-      [GET_MANY_REFERENCE]: (resource) => `${resource.name}`,
-      [CREATE]: (resource) => `insert_${resource.name}`,
-      [UPDATE]: (resource) => `update_${resource.name}`,
-      [UPDATE_MANY]: (resource) => `update_${resource.name}`,
-      [DELETE]: (resource) => `delete_${resource.name}`,
-      [DELETE_MANY]: (resource) => `delete_${resource.name}`,
+      [sanitizeFetchType(GET_LIST)]: (resource) => `${resource.name}`,
+      [sanitizeFetchType(GET_ONE)]: (resource) => `${resource.name}`,
+      [sanitizeFetchType(GET_MANY)]: (resource) => `${resource.name}`,
+      [sanitizeFetchType(GET_MANY_REFERENCE)]: (resource) => `${resource.name}`,
+      [sanitizeFetchType(CREATE)]: (resource) => `insert_${resource.name}`,
+      [sanitizeFetchType(UPDATE)]: (resource) => `update_${resource.name}`,
+      [sanitizeFetchType(UPDATE_MANY)]: (resource) => `update_${resource.name}`,
+      [sanitizeFetchType(DELETE)]: (resource) => `delete_${resource.name}`,
+      [sanitizeFetchType(DELETE_MANY)]: (resource) => `delete_${resource.name}`,
     },
   },
 };
@@ -87,10 +88,6 @@ const buildCustomDataProvider = (
     customGetResponseParser
   );
   return buildDataProvider(merge({}, defaultOptions, { buildQuery }, options));
-  // .then((dataProvider) => {
-  //   return (fetchType, resource, params) => {
-  //     return dataProvider(fetchType, resource, params);
-  //   };
 };
 
 export default buildCustomDataProvider;
