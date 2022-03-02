@@ -140,7 +140,6 @@ const buildGetListVariables =
     }
 
     if (params.sort) {
-      // localStorage.setItem("va-params",JSON.stringify(params))
       let ret = {};
       for (let s of params.sort) {
         ret[s.by] = s.desc ? 'desc' : 'asc';

@@ -152,107 +152,133 @@ export const buildApolloArgs = (query, variables) => {
   return args;
 };
 
-export const buildGqlQuery = (
-  introspectionResults,
-  buildFields,
-  buildMetaArgs,
-  buildArgs,
-  buildApolloArgs,
-  aggregateFieldName
-) => (resource, aorFetchType, queryType, variables) => {
-  const { sortField, sortOrder, ...metaVariables } = variables;
-  const apolloArgs = buildApolloArgs(queryType, variables);
-  const args = buildArgs(queryType, variables);
-  const metaArgs = buildMetaArgs(queryType, metaVariables, aorFetchType);
-  const fields = buildFields(resource.type, aorFetchType);
-  if (
-    aorFetchType === GET_LIST ||
-    aorFetchType === GET_MANY ||
-    aorFetchType === GET_MANY_REFERENCE
-  ) {
+export const buildGqlQuery =
+  (
+    introspectionResults,
+    buildFields,
+    buildMetaArgs,
+    buildArgs,
+    buildApolloArgs,
+    aggregateFieldName
+  ) =>
+  (resource, aorFetchType, queryType, variables, includeResourceNames = []) => {
+    const { sortField, sortOrder, ...metaVariables } = variables;
+    const apolloArgs = buildApolloArgs(queryType, variables);
+    const args = buildArgs(queryType, variables);
+    const metaArgs = buildMetaArgs(queryType, metaVariables, aorFetchType);
+    const fields = buildFields(resource.type, aorFetchType);
+    console.log('include', includeResourceNames);
+    for (let resourceName of includeResourceNames) {
+      console.log('introspectionResults', introspectionResults);
+      const nestResource = introspectionResults.resources.find(
+        (r) => r.type.name === resourceName
+      );
+      console.log('nestResource', nestResource);
+      if (nestResource) {
+        const nestFields = buildFields(nestResource.type, aorFetchType);
+        console.log('nestFields', nestFields);
+        let field = gqlTypes.field(
+          gqlTypes.name(resourceName),
+          null,
+          null,
+          null,
+          gqlTypes.selectionSet(nestFields)
+        );
+
+        fields.push(field);
+      }
+    }
+    console.log('fields', fields);
+    if (
+      aorFetchType === GET_LIST ||
+      aorFetchType === GET_MANY ||
+      aorFetchType === GET_MANY_REFERENCE
+    ) {
+      return gqlTypes.document([
+        gqlTypes.operationDefinition(
+          'query',
+          gqlTypes.selectionSet([
+            gqlTypes.field(
+              gqlTypes.name(queryType.name),
+              gqlTypes.name('items'),
+              args,
+              null,
+              gqlTypes.selectionSet(fields)
+            ),
+            gqlTypes.field(
+              gqlTypes.name(aggregateFieldName(queryType.name)),
+              gqlTypes.name('total'),
+              metaArgs,
+              null,
+              gqlTypes.selectionSet([
+                gqlTypes.field(
+                  gqlTypes.name('aggregate'),
+                  null,
+                  null,
+                  null,
+                  gqlTypes.selectionSet([
+                    gqlTypes.field(gqlTypes.name('count')),
+                  ])
+                ),
+              ])
+            ),
+          ]),
+          gqlTypes.name(queryType.name),
+          apolloArgs
+        ),
+      ]);
+    }
+
+    if (
+      aorFetchType === CREATE ||
+      aorFetchType === UPDATE ||
+      aorFetchType === UPDATE_MANY ||
+      aorFetchType === DELETE ||
+      aorFetchType === DELETE_MANY
+    ) {
+      return gqlTypes.document([
+        gqlTypes.operationDefinition(
+          'mutation',
+          gqlTypes.selectionSet([
+            gqlTypes.field(
+              gqlTypes.name(queryType.name),
+              gqlTypes.name('data'),
+              args,
+              null,
+              gqlTypes.selectionSet([
+                gqlTypes.field(
+                  gqlTypes.name('returning'),
+                  null,
+                  null,
+                  null,
+                  gqlTypes.selectionSet(fields)
+                ),
+              ])
+            ),
+          ]),
+          gqlTypes.name(queryType.name),
+          apolloArgs
+        ),
+      ]);
+    }
+
     return gqlTypes.document([
       gqlTypes.operationDefinition(
         'query',
         gqlTypes.selectionSet([
           gqlTypes.field(
             gqlTypes.name(queryType.name),
-            gqlTypes.name('items'),
+            gqlTypes.name('returning'),
             args,
             null,
             gqlTypes.selectionSet(fields)
           ),
-          gqlTypes.field(
-            gqlTypes.name(aggregateFieldName(queryType.name)),
-            gqlTypes.name('total'),
-            metaArgs,
-            null,
-            gqlTypes.selectionSet([
-              gqlTypes.field(
-                gqlTypes.name('aggregate'),
-                null,
-                null,
-                null,
-                gqlTypes.selectionSet([gqlTypes.field(gqlTypes.name('count'))])
-              ),
-            ])
-          ),
         ]),
         gqlTypes.name(queryType.name),
         apolloArgs
       ),
     ]);
-  }
-
-  if (
-    aorFetchType === CREATE ||
-    aorFetchType === UPDATE ||
-    aorFetchType === UPDATE_MANY ||
-    aorFetchType === DELETE ||
-    aorFetchType === DELETE_MANY
-  ) {
-    return gqlTypes.document([
-      gqlTypes.operationDefinition(
-        'mutation',
-        gqlTypes.selectionSet([
-          gqlTypes.field(
-            gqlTypes.name(queryType.name),
-            gqlTypes.name('data'),
-            args,
-            null,
-            gqlTypes.selectionSet([
-              gqlTypes.field(
-                gqlTypes.name('returning'),
-                null,
-                null,
-                null,
-                gqlTypes.selectionSet(fields)
-              ),
-            ])
-          ),
-        ]),
-        gqlTypes.name(queryType.name),
-        apolloArgs
-      ),
-    ]);
-  }
-
-  return gqlTypes.document([
-    gqlTypes.operationDefinition(
-      'query',
-      gqlTypes.selectionSet([
-        gqlTypes.field(
-          gqlTypes.name(queryType.name),
-          gqlTypes.name('returning'),
-          args,
-          null,
-          gqlTypes.selectionSet(fields)
-        ),
-      ]),
-      gqlTypes.name(queryType.name),
-      apolloArgs
-    ),
-  ]);
-};
+  };
 
 export default (introspectionResults) =>
   buildGqlQuery(

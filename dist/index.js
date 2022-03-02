@@ -23002,93 +23002,116 @@ module.exports = (function (e) {
             []
           );
       },
-      to = (e, t, n, r, i, o) => (e, a, u, s) => {
-        const { sortField: c, sortOrder: l, ...f } = s,
-          p = i(u, s),
-          d = r(u, s),
-          h = n(u, f, a),
-          y = t(e.type, a);
-        return 'getList' === a || 'getMany' === a || 'getManyReference' === a
-          ? Bi.document([
-              Bi.operationDefinition(
-                'query',
-                Bi.selectionSet([
-                  Bi.field(
-                    Bi.name(u.name),
-                    Bi.name('items'),
-                    d,
-                    null,
-                    Bi.selectionSet(y)
-                  ),
-                  Bi.field(
-                    Bi.name(o(u.name)),
-                    Bi.name('total'),
-                    h,
-                    null,
+      to =
+        (e, t, n, r, i, o) =>
+        (a, u, s, c, l = []) => {
+          const { sortField: f, sortOrder: p, ...d } = c,
+            h = i(s, c),
+            y = r(s, c),
+            v = n(s, d, u),
+            m = t(a.type, u);
+          console.log('include', l);
+          for (let n of l) {
+            console.log('introspectionResults', e);
+            const r = e.resources.find((e) => e.type.name === n);
+            if ((console.log('nestResource', r), r)) {
+              const e = t(r.type, u);
+              console.log('nestFields', e);
+              let i = Bi.field(
+                Bi.name(n),
+                null,
+                null,
+                null,
+                Bi.selectionSet(e)
+              );
+              m.push(i);
+            }
+          }
+          return (
+            console.log('fields', m),
+            'getList' === u || 'getMany' === u || 'getManyReference' === u
+              ? Bi.document([
+                  Bi.operationDefinition(
+                    'query',
                     Bi.selectionSet([
                       Bi.field(
-                        Bi.name('aggregate'),
+                        Bi.name(s.name),
+                        Bi.name('items'),
+                        y,
                         null,
-                        null,
-                        null,
-                        Bi.selectionSet([Bi.field(Bi.name('count'))])
+                        Bi.selectionSet(m)
                       ),
-                    ])
+                      Bi.field(
+                        Bi.name(o(s.name)),
+                        Bi.name('total'),
+                        v,
+                        null,
+                        Bi.selectionSet([
+                          Bi.field(
+                            Bi.name('aggregate'),
+                            null,
+                            null,
+                            null,
+                            Bi.selectionSet([Bi.field(Bi.name('count'))])
+                          ),
+                        ])
+                      ),
+                    ]),
+                    Bi.name(s.name),
+                    h
                   ),
-                ]),
-                Bi.name(u.name),
-                p
-              ),
-            ])
-          : 'create' === a ||
-            'update' === a ||
-            'updateMany' === a ||
-            'delete' === a ||
-            'deleteMany' === a
-          ? Bi.document([
-              Bi.operationDefinition(
-                'mutation',
-                Bi.selectionSet([
-                  Bi.field(
-                    Bi.name(u.name),
-                    Bi.name('data'),
-                    d,
-                    null,
+                ])
+              : 'create' === u ||
+                'update' === u ||
+                'updateMany' === u ||
+                'delete' === u ||
+                'deleteMany' === u
+              ? Bi.document([
+                  Bi.operationDefinition(
+                    'mutation',
                     Bi.selectionSet([
                       Bi.field(
+                        Bi.name(s.name),
+                        Bi.name('data'),
+                        y,
+                        null,
+                        Bi.selectionSet([
+                          Bi.field(
+                            Bi.name('returning'),
+                            null,
+                            null,
+                            null,
+                            Bi.selectionSet(m)
+                          ),
+                        ])
+                      ),
+                    ]),
+                    Bi.name(s.name),
+                    h
+                  ),
+                ])
+              : Bi.document([
+                  Bi.operationDefinition(
+                    'query',
+                    Bi.selectionSet([
+                      Bi.field(
+                        Bi.name(s.name),
                         Bi.name('returning'),
+                        y,
                         null,
-                        null,
-                        null,
-                        Bi.selectionSet(y)
+                        Bi.selectionSet(m)
                       ),
-                    ])
+                    ]),
+                    Bi.name(s.name),
+                    h
                   ),
-                ]),
-                Bi.name(u.name),
-                p
-              ),
-            ])
-          : Bi.document([
-              Bi.operationDefinition(
-                'query',
-                Bi.selectionSet([
-                  Bi.field(
-                    Bi.name(u.name),
-                    Bi.name('returning'),
-                    d,
-                    null,
-                    Bi.selectionSet(y)
-                  ),
-                ]),
-                Bi.name(u.name),
-                p
-              ),
-            ]);
-      };
+                ])
+          );
+        };
     const no = (e, t, n) => (r) => {
       const i = r.resources.map((e) => e.type.name);
       return (o, a, u) => {
+        localStorage.setItem('va-params', JSON.stringify(u));
         const s = r.resources.find((e) => e.type.name === a);
         if (!s)
           throw i.length
@@ -23107,7 +23130,7 @@ module.exports = (function (e) {
           );
         const l = e(r)(s, o, u, c);
         return {
-          query: t(r)(s, o, c, l),
+          query: t(r)(s, o, c, l, u.include ? u.include : []),
           variables: l,
           parseResponse: n(r)(o, s, c),
         };
