@@ -162,14 +162,13 @@ const typeAwareKeyValueReducer =
     const type = introspectionResults.types.find(
       (t) => t.name === resource.type.name
     );
+    let { data } = params;
+
     const field = type.fields.find((t) => t.name === key);
     const value =
-      field &&
-      field.type &&
-      field.type.name === 'date' &&
-      params.data[key] === ''
+      field && field.type && field.type.name === 'date' && data[key] === ''
         ? null
-        : params.data[key];
+        : data[key];
     return resource.type.fields.some((f) => f.name === key)
       ? {
           ...acc,
@@ -225,7 +224,9 @@ const buildCreateVariables =
       resource,
       params
     );
-    return Object.keys(params.data).reduce(reducer, {});
+
+    let { data } = params;
+    return Object.keys(data).reduce(reducer, {});
   };
 
 const makeNestedTarget = (target, id) =>
@@ -292,14 +293,29 @@ export default (introspectionResults) =>
           where: { id: { _eq: params.id } },
         };
       case CREATE:
-        return {
-          objects: buildCreateVariables(introspectionResults)(
+        let objects = [];
+        let { data } = params;
+        if (Array.isArray(data)) {
+          //创建多对象插入variable
+          for (let o of data) {
+            objects.push(
+              buildCreateVariables(introspectionResults)(
+                resource,
+                aorFetchType,
+                { data: o },
+                queryType
+              )
+            );
+          }
+        } else {
+          objects = buildCreateVariables(introspectionResults)(
             resource,
             aorFetchType,
             params,
             queryType
-          ),
-        };
+          );
+        }
+        return { objects };
 
       case UPDATE:
         return {

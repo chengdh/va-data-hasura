@@ -22827,14 +22827,12 @@ module.exports = (function (e) {
         return r;
       },
       Vi = (e, t, n) => (r, i) => {
-        const o = e.types
-            .find((e) => e.name === t.type.name)
-            .fields.find((e) => e.name === i),
-          a =
-            o && o.type && 'date' === o.type.name && '' === n.data[i]
-              ? null
-              : n.data[i];
-        return t.type.fields.some((e) => e.name === i) ? { ...r, [i]: a } : r;
+        const o = e.types.find((e) => e.name === t.type.name);
+        let { data: a } = n;
+        const u = o.fields.find((e) => e.name === i),
+          s =
+            u && u.type && 'date' === u.type.name && '' === a[i] ? null : a[i];
+        return t.type.fields.some((e) => e.name === i) ? { ...r, [i]: s } : r;
       },
       Ci = (e) => (t, n, r, i) => {
         const o = Vi(e, t, r);
@@ -22858,7 +22856,8 @@ module.exports = (function (e) {
       },
       Qi = (e) => (t, n, r, i) => {
         const o = Vi(e, t, r);
-        return Object.keys(r.data).reduce(o, {});
+        let { data: a } = r;
+        return Object.keys(a).reduce(o, {});
       },
       Ki = (e, t) =>
         e
@@ -22882,7 +22881,12 @@ module.exports = (function (e) {
         case 'delete':
           return { where: { id: { _eq: r.id } } };
         case 'create':
-          return { objects: Qi(e)(t, n, r, i) };
+          let a = [],
+            { data: u } = r;
+          if (Array.isArray(u))
+            for (let r of u) a.push(Qi(e)(t, n, { data: r }, i));
+          else a = Qi(e)(t, n, r, i);
+          return { objects: a };
         case 'update':
           return { _set: Ci(e)(t, n, r, i), where: { id: { _eq: r.id } } };
         case 'updateMany':
