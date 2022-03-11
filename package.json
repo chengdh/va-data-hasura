@@ -1,6 +1,6 @@
 {
   "name": "va-data-hasura",
-  "version": "0.4.2",
+  "version": "0.4.4",
   "description": "A data provider for connecting vuetify-admin to a Hasura endpoint",
   "main": "dist/index.js",
   "sideEffects": false,
@@ -31,6 +31,7 @@
     "kind-of": ">=6.0.3",
     "lodash": "~4.17.5",
     "minimist": ">=1.2.3",
+    "pluralize": "^8.0.0",
     "vuetify-admin-data-graphql": "0.2.1"
   },
   "devDependencies": {

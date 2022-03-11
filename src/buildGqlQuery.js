@@ -2,6 +2,7 @@ import {
   GET_LIST,
   GET_MANY,
   GET_MANY_REFERENCE,
+  GET_ONE,
   DELETE,
   CREATE,
   UPDATE,
@@ -15,6 +16,7 @@ import * as gqlTypes from 'graphql-ast-types-browser';
 import getFinalType from './getFinalType';
 import isList from './isList';
 import isRequired from './isRequired';
+const pluralize = require('pluralize');
 
 export const buildFragments = (introspectionResults) => (possibleTypes) =>
   possibleTypes.reduce((acc, possibleType) => {
@@ -171,8 +173,12 @@ export const buildGqlQuery =
     for (let resourceName of includeResourceNames) {
       console.log('introspectionResults', introspectionResults);
       const nestResource = introspectionResults.resources.find(
-        (r) => r.type.name === resourceName
+        (r) =>
+          r.type.name === resourceName ||
+          pluralize(r.type.name, 2) == resourceName
       );
+
+      //如果找不到,可能是复数形式,将起转换为单数试试
       console.log('nestResource', nestResource);
       if (nestResource) {
         const nestFields = buildFields(nestResource.type, aorFetchType);
