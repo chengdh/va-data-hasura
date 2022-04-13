@@ -8,6 +8,9 @@ import {
   UPDATE,
   UPDATE_MANY,
   DELETE_MANY,
+  GET_TREE,
+  GET_NODES,
+  MOVE_NODE,
 } from './fetchActions';
 
 import { TypeKind } from 'graphql';
@@ -104,7 +107,9 @@ export const buildMetaArgs = (query, variables, aorFetchType) => {
     if (
       aorFetchType === GET_LIST ||
       aorFetchType === GET_MANY ||
-      aorFetchType === GET_MANY_REFERENCE
+      aorFetchType === GET_MANY_REFERENCE ||
+      aorFetchType === GET_TREE ||
+      aorFetchType === GET_NODES
     ) {
       return (
         typeof variables[k] !== 'undefined' && k !== 'limit' && k !== 'offset'
@@ -163,7 +168,13 @@ export const buildGqlQuery =
     buildApolloArgs,
     aggregateFieldName
   ) =>
-  (resource, aorFetchType, queryType, variables, includeResourceNames = []) => {
+  (
+    resource,
+    aorFetchType,
+    queryType,
+    variables = {},
+    includeResourceNames = []
+  ) => {
     const { sortField, sortOrder, ...metaVariables } = variables;
     const apolloArgs = buildApolloArgs(queryType, variables);
     const args = buildArgs(queryType, variables);
@@ -198,7 +209,9 @@ export const buildGqlQuery =
     if (
       aorFetchType === GET_LIST ||
       aorFetchType === GET_MANY ||
-      aorFetchType === GET_MANY_REFERENCE
+      aorFetchType === GET_MANY_REFERENCE ||
+      aorFetchType === GET_TREE ||
+      aorFetchType === GET_NODES
     ) {
       return gqlTypes.document([
         gqlTypes.operationDefinition(

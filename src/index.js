@@ -11,6 +11,9 @@ import {
   UPDATE,
   UPDATE_MANY,
   DELETE_MANY,
+  GET_TREE,
+  GET_NODES,
+  MOVE_NODE,
 } from './fetchActions';
 
 import defaultBuildVariables from './buildVariables';
@@ -49,6 +52,11 @@ const defaultOptions = {
       [UPDATE_MANY]: (resource) => `update_${resource.name}`,
       [DELETE]: (resource) => `delete_${resource.name}`,
       [DELETE_MANY]: (resource) => `delete_${resource.name}`,
+
+      //NOTE 使用tree时,默认情况下,resource应该有parent_id及position字段
+      [GET_TREE]: (resource) => `${resource.name}`,
+      [GET_NODES]: (resource) => `${resource.name}`,
+      [MOVE_NODE]: (resource) => `update_${resource.name}`,
     },
   },
 };
