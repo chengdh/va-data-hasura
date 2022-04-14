@@ -259,7 +259,7 @@ const makeNestedTarget = (target, id) =>
 export default (introspectionResults) =>
   (resource, aorFetchType, params, queryType) => {
     switch (aorFetchType) {
-      case GET_LIST || GET_TREE || GET_NODES:
+      case GET_LIST:
         return buildGetListVariables(introspectionResults)(
           resource,
           aorFetchType,
