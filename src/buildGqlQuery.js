@@ -57,7 +57,7 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) => {
     let currentFields = [...rootFields];
     let childrenField;
     //NOTE 笨方法,只能手动
-    for (let i = 1; i < 2; i++) {
+    for (let i = 1; i < 10; i++) {
       childrenField = gqlTypes.field(
         gqlTypes.name('children'),
         null,
