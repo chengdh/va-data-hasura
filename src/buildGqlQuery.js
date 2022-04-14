@@ -53,7 +53,8 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) => {
     finalType.kind == TypeKind.OBJECT ||
     finalType.kind == TypeKind.INTERFACE
   ) {
-    let currentFields = buildFields(includeResource.type);
+    let rootFields = buildFields(includeResource.type);
+    let currentFields;
     //NOTE 笨方法,只能手动
     for (let i = 1; i < 10; i++) {
       let childrenField = gqlTypes.field(
@@ -63,8 +64,9 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) => {
         null,
         gqlTypes.selectionSet(currentFields)
       );
-      currentFields = [...currentFields, childrenField];
+      currentFields = [...rootFields, childrenField];
     }
+    rootFields.push(currentFields);
 
     // //level 3
     // let childrenFieldLevel3 = gqlTypes.field(
@@ -99,7 +101,7 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) => {
       null,
       null,
       null,
-      gqlTypes.selectionSet(currentFields)
+      gqlTypes.selectionSet(rootFields)
     );
     return [gqlField];
   }
