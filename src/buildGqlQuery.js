@@ -286,11 +286,7 @@ export const buildGqlQuery =
               gqlTypes.name('items'),
               args,
               null,
-              gqlTypes.selectionSet([
-                ...fields,
-                ...includeFields,
-                ...childrenFields,
-              ])
+              gqlTypes.selectionSet([...fields, ...includeFields])
             ),
             gqlTypes.field(
               gqlTypes.name(aggregateFieldName(queryType.name)),
@@ -325,7 +321,11 @@ export const buildGqlQuery =
               gqlTypes.name('items'),
               args,
               null,
-              gqlTypes.selectionSet([...fields, ...includeFields])
+              gqlTypes.selectionSet([
+                ...fields,
+                ...includeFields,
+                ...childrenFields,
+              ])
             ),
           ]),
           gqlTypes.name(queryType.name),
