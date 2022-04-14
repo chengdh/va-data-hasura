@@ -61,14 +61,14 @@ export const buildIncludeFields = (
       finalType.kind == TypeKind.INTERFACE
     ) {
       const nestFields = buildFields(includeResource.type);
-      let field = gqlTypes.field(
+      let gqlField = gqlTypes.field(
         gqlTypes.name(field.name),
         null,
         null,
         null,
         gqlTypes.selectionSet(nestFields)
       );
-      return [...acc, field];
+      return [...acc, gqlField];
     }
 
     return acc;
