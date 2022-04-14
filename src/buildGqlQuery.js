@@ -37,41 +37,43 @@ export const buildFragments = (introspectionResults) => (possibleTypes) =>
       ),
     ];
   }, []);
-export const buildTreeChildrenFields = (introspectionResults, rootType) =>
-  rootType.fields.reduce((acc, field) => {
-    if (field.name !== 'children') {
-      return acc;
-    }
-    const finalType = getFinalType(field.type);
-    //获取introspectionResults
-    const includeResource = introspectionResults.resources.find(
-      (r) => r.type.name === finalType.name
-    );
-    if (!includeResource) {
-      return acc;
-    }
-
-    if (
-      finalType.kind == TypeKind.OBJECT ||
-      finalType.kind == TypeKind.INTERFACE
-    ) {
-      const nestFields = buildFields(includeResource.type);
-      const childrenFields = buildTreeChildrenFields(
-        introspectionResults,
-        includeResource.type
-      );
-      let gqlField = gqlTypes.field(
-        gqlTypes.name(field.name),
-        null,
-        null,
-        null,
-        gqlTypes.selectionSet([...nestFields, ...childrenFields])
-      );
-      return [...acc, gqlField];
-    }
-
+export const buildTreeChildrenFields = (introspectionResults, rootType) => {
+  field = rootType.fields.find((f) => f.name === 'children');
+  const finalType = getFinalType(field.type);
+  //获取introspectionResults
+  const includeResource = introspectionResults.resources.find(
+    (r) => r.type.name === finalType.name
+  );
+  if (!includeResource) {
     return acc;
-  }, []);
+  }
+
+  if (
+    finalType.kind == TypeKind.OBJECT ||
+    finalType.kind == TypeKind.INTERFACE
+  ) {
+    let nestField = buildFields(includeResource.type);
+    let childrenField = gqlTypes.field(
+      gqlTypes.name('children'),
+      null,
+      null,
+      null,
+      gqlTypes.selectionSet(nestField)
+    );
+
+    nestField.push(childrenField);
+    let gqlField = gqlTypes.field(
+      gqlTypes.name(field.name),
+      null,
+      null,
+      null,
+      gqlTypes.selectionSet(nestField)
+    );
+    return [gqlField];
+  }
+
+  return acc;
+};
 export const buildIncludeFields = (
   introspectionResults,
   rootType,
