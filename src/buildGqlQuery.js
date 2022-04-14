@@ -38,15 +38,29 @@ export const buildFragments = (introspectionResults) => (possibleTypes) =>
     ];
   }, []);
 
-//include 附加对象字段
-export const buildFields = (type, aorFetchType = '', includes = []) =>
-  type.fields.reduce((acc, field) => {
-    const type = getFinalType(field.type);
+export const buildIncludeFields = (
+  introspectionResults,
+  rootType,
+  includes = []
+) =>
+  rootType.fields.reduce((acc, field) => {
+    if (!includes.includes(field.name)) {
+      return acc;
+    }
+    const finalType = getFinalType(field.type);
+    //获取introspectionResults
+    const includeResource = introspectionResults.resources.find(
+      (r) => r.type.name === finalType.name
+    );
+    if (!includeResource) {
+      return acc;
+    }
 
-    if (type.kind !== TypeKind.OBJECT && type.kind !== TypeKind.INTERFACE) {
-      return [...acc, gqlTypes.field(gqlTypes.name(field.name))];
-    } else if (includes.includes(field.name)) {
-      const nestFields = buildFields(type);
+    if (
+      finalType.kind == TypeKind.OBJECT ||
+      finalType.kind == TypeKind.INTERFACE
+    ) {
+      const nestFields = buildFields(includeResource.type);
       let field = gqlTypes.field(
         gqlTypes.name(field.name),
         null,
@@ -59,6 +73,18 @@ export const buildFields = (type, aorFetchType = '', includes = []) =>
 
     return acc;
   }, []);
+
+export const buildFields = (type, aorFetchType = '') => {
+  const fields = type.fields.reduce((acc, field) => {
+    const type = getFinalType(field.type);
+
+    if (type.kind !== TypeKind.OBJECT && type.kind !== TypeKind.INTERFACE) {
+      return [...acc, gqlTypes.field(gqlTypes.name(field.name))];
+    }
+    return acc;
+  }, []);
+  return fields;
+};
 
 export const getArgType = (arg) => {
   const type = getFinalType(arg.type);
@@ -199,32 +225,12 @@ export const buildGqlQuery =
       aorFetchType,
       includeResourceNames
     );
+    const includeFields = buildIncludeFields(
+      introspectionResults,
+      resource.type,
+      includeResourceNames
+    );
 
-    // for (let resourceName of includeResourceNames) {
-    //   console.log('introspectionResults', introspectionResults);
-    //   const nestResource = introspectionResults.resources.find(
-    //     (r) =>
-    //       r.type.name === resourceName ||
-    //       pluralize(r.type.name, 2) == resourceName
-    //   );
-
-    //   //如果找不到,可能是复数形式,将其转换为单数试试
-    //   console.log('nestResource', nestResource);
-    //   if (nestResource) {
-    //     const nestFields = buildFields(nestResource.type, aorFetchType);
-    //     console.log('nestFields', nestFields);
-    //     let field = gqlTypes.field(
-    //       gqlTypes.name(resourceName),
-    //       null,
-    //       null,
-    //       null,
-    //       gqlTypes.selectionSet(nestFields)
-    //     );
-
-    //     fields.push(field);
-    //   }
-    // }
-    // console.log('fields', fields);
     if (
       aorFetchType === GET_LIST ||
       aorFetchType === GET_MANY ||
@@ -239,7 +245,7 @@ export const buildGqlQuery =
               gqlTypes.name('items'),
               args,
               null,
-              gqlTypes.selectionSet(fields)
+              gqlTypes.selectionSet([...fields, ...includeFields])
             ),
             gqlTypes.field(
               gqlTypes.name(aggregateFieldName(queryType.name)),
