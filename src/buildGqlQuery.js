@@ -53,7 +53,7 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) => {
     finalType.kind == TypeKind.OBJECT ||
     finalType.kind == TypeKind.INTERFACE
   ) {
-    let currentFields = (rootNestField = buildFields(includeResource.type));
+    let currentFields = buildFields(includeResource.type);
     //NOTE 笨方法,只能手动
     for (let i = 1; i < 10; i++) {
       let childrenField = gqlTypes.field(
