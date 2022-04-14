@@ -38,11 +38,14 @@ export const buildFragments = (introspectionResults) => (possibleTypes) =>
     ];
   }, []);
 
-export const buildFields = (type) =>
+//include 附加对象字段
+export const buildFields = (type, aorFetchType = '', includes = []) =>
   type.fields.reduce((acc, field) => {
     const type = getFinalType(field.type);
 
     if (type.kind !== TypeKind.OBJECT && type.kind !== TypeKind.INTERFACE) {
+      return [...acc, gqlTypes.field(gqlTypes.name(field.name))];
+    } else if (includes.includes(field.name)) {
       return [...acc, gqlTypes.field(gqlTypes.name(field.name))];
     }
 
@@ -179,38 +182,41 @@ export const buildGqlQuery =
     const apolloArgs = buildApolloArgs(queryType, variables);
     const args = buildArgs(queryType, variables);
     const metaArgs = buildMetaArgs(queryType, metaVariables, aorFetchType);
-    const fields = buildFields(resource.type, aorFetchType);
 
-    //NOTE:如果GET_TREE 或者 GET_NODES请求，则需要include children字段
     if (aorFetchType === GET_TREE || aorFetchType === GET_NODES) {
       includeResourceNames.push('children');
     }
-    console.log('include', includeResourceNames);
-    for (let resourceName of includeResourceNames) {
-      console.log('introspectionResults', introspectionResults);
-      const nestResource = introspectionResults.resources.find(
-        (r) =>
-          r.type.name === resourceName ||
-          pluralize(r.type.name, 2) == resourceName
-      );
+    const fields = buildFields(
+      resource.type,
+      aorFetchType,
+      includeResourceNames
+    );
 
-      //如果找不到,可能是复数形式,将其转换为单数试试
-      console.log('nestResource', nestResource);
-      if (nestResource) {
-        const nestFields = buildFields(nestResource.type, aorFetchType);
-        console.log('nestFields', nestFields);
-        let field = gqlTypes.field(
-          gqlTypes.name(resourceName),
-          null,
-          null,
-          null,
-          gqlTypes.selectionSet(nestFields)
-        );
+    // for (let resourceName of includeResourceNames) {
+    //   console.log('introspectionResults', introspectionResults);
+    //   const nestResource = introspectionResults.resources.find(
+    //     (r) =>
+    //       r.type.name === resourceName ||
+    //       pluralize(r.type.name, 2) == resourceName
+    //   );
 
-        fields.push(field);
-      }
-    }
-    console.log('fields', fields);
+    //   //如果找不到,可能是复数形式,将其转换为单数试试
+    //   console.log('nestResource', nestResource);
+    //   if (nestResource) {
+    //     const nestFields = buildFields(nestResource.type, aorFetchType);
+    //     console.log('nestFields', nestFields);
+    //     let field = gqlTypes.field(
+    //       gqlTypes.name(resourceName),
+    //       null,
+    //       null,
+    //       null,
+    //       gqlTypes.selectionSet(nestFields)
+    //     );
+
+    //     fields.push(field);
+    //   }
+    // }
+    // console.log('fields', fields);
     if (
       aorFetchType === GET_LIST ||
       aorFetchType === GET_MANY ||
