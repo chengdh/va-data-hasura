@@ -59,7 +59,7 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) => {
       null,
       null,
       null,
-      gqlTypes.selectionSet(nestField)
+      gqlTypes.selectionSet([...nestField])
     );
 
     nestField.push(childrenField);
