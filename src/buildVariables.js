@@ -266,6 +266,21 @@ export default (introspectionResults) =>
           params,
           queryType
         );
+      case GET_TREE:
+        return buildGetListVariables(introspectionResults)(
+          resource,
+          aorFetchType,
+          params,
+          queryType
+        );
+      case GET_NODES:
+        return buildGetListVariables(introspectionResults)(
+          resource,
+          aorFetchType,
+          params,
+          queryType
+        );
+
       case GET_MANY_REFERENCE: {
         var built = buildGetListVariables(introspectionResults)(
           resource,
