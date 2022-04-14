@@ -56,7 +56,10 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) =>
       finalType.kind == TypeKind.INTERFACE
     ) {
       const nestFields = buildFields(includeResource.type);
-      const childrenFields = buildTreeChildrenFields(includeResource.type);
+      const childrenFields = buildTreeChildrenFields(
+        introspectionResults,
+        includeResource.type
+      );
       let gqlField = gqlTypes.field(
         gqlTypes.name(field.name),
         null,
