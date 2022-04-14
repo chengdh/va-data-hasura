@@ -46,7 +46,15 @@ export const buildFields = (type, aorFetchType = '', includes = []) =>
     if (type.kind !== TypeKind.OBJECT && type.kind !== TypeKind.INTERFACE) {
       return [...acc, gqlTypes.field(gqlTypes.name(field.name))];
     } else if (includes.includes(field.name)) {
-      return [...acc, gqlTypes.field(gqlTypes.name(field.name))];
+      const nestFields = buildFields(type);
+      let field = gqlTypes.field(
+        gqlTypes.name(field.name),
+        null,
+        null,
+        null,
+        gqlTypes.selectionSet(nestFields)
+      );
+      return [...acc, field];
     }
 
     return acc;
