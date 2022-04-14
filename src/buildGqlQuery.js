@@ -37,7 +37,38 @@ export const buildFragments = (introspectionResults) => (possibleTypes) =>
       ),
     ];
   }, []);
+export const buildTreeChildrenFields = (rootType) =>
+  rootType.fields.reduce((acc, field) => {
+    if (field.name !== 'children') {
+      return acc;
+    }
+    const finalType = getFinalType(field.type);
+    //获取introspectionResults
+    const includeResource = introspectionResults.resources.find(
+      (r) => r.type.name === finalType.name
+    );
+    if (!includeResource) {
+      return acc;
+    }
 
+    if (
+      finalType.kind == TypeKind.OBJECT ||
+      finalType.kind == TypeKind.INTERFACE
+    ) {
+      const nestFields = buildFields(includeResource.type);
+      const childrenFields = buildTreeChildrenFields(includeResource.type);
+      let gqlField = gqlTypes.field(
+        gqlTypes.name(field.name),
+        null,
+        null,
+        null,
+        gqlTypes.selectionSet([...nestFields, ...childrenFields])
+      );
+      return [...acc, gqlField];
+    }
+
+    return acc;
+  }, []);
 export const buildIncludeFields = (
   introspectionResults,
   rootType,
