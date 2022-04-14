@@ -37,7 +37,7 @@ export const buildFragments = (introspectionResults) => (possibleTypes) =>
       ),
     ];
   }, []);
-export const buildTreeChildrenFields = (rootType) =>
+export const buildTreeChildrenFields = (introspectionResults, rootType) =>
   rootType.fields.reduce((acc, field) => {
     if (field.name !== 'children') {
       return acc;
@@ -248,8 +248,12 @@ export const buildGqlQuery =
     const args = buildArgs(queryType, variables);
     const metaArgs = buildMetaArgs(queryType, metaVariables, aorFetchType);
 
+    let childrenFields = [];
     if (aorFetchType === GET_TREE || aorFetchType === GET_NODES) {
-      includeResourceNames.push('children');
+      childrenFields = buildTreeChildrenFields(
+        introspectionResults,
+        resource.type
+      );
     }
     const fields = buildFields(
       resource.type,
@@ -276,7 +280,11 @@ export const buildGqlQuery =
               gqlTypes.name('items'),
               args,
               null,
-              gqlTypes.selectionSet([...fields, ...includeFields])
+              gqlTypes.selectionSet([
+                ...fields,
+                ...includeFields,
+                ...childrenFields,
+              ])
             ),
             gqlTypes.field(
               gqlTypes.name(aggregateFieldName(queryType.name)),
