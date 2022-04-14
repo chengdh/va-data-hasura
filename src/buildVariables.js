@@ -18,7 +18,7 @@ import {
 const SPLIT_TOKEN = '#';
 
 import getFinalType from './getFinalType';
-const buildFilter = (filterObj = {}, customFilters = []) => {
+const buildFilter = (resource, filterObj = {}, customFilters = []) => {
   /**
    * Nested entities are parsed by CRA, which returns a nested object
    * { 'level1': {'level2': 'test'}}
@@ -134,12 +134,12 @@ const buildGetListVariables =
     const result = {};
     let { filter: filterObj = {} } = params;
     const { customFilters = [] } = params;
-    const whereObj = buildFilter(filterObj, customFilters);
+    const whereObj = buildFilter(resource, filterObj, customFilters);
 
     //process getNodes
     const whereParentObj = {};
     if (params.parent) {
-      whereParentObj = buildFilter({ parent: params.parent });
+      whereParentObj = buildFilter(resource, { parent: params.parent });
       whereObj['_and'] = [...whereObj['_and'], ...whereParentObj['_and']];
     }
 
