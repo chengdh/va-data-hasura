@@ -23279,10 +23279,13 @@ module.exports = (function (e) {
       }, {});
     var Bi = (e) => (e, t) => (t) => {
         const n = t.data;
-        switch (e) {
+        switch ((console.log('responseParser:aorFetchType', e), e)) {
           case 'getManyReference':
           case 'getList':
             return { data: n.items.map(qi), total: n.total.aggregate.count };
+          case 'getTree':
+          case 'getNodes':
+          case 'moveNode':
           case 'getMany':
             return { data: n.items.map(qi) };
           case 'getOne':

@@ -8,6 +8,9 @@ import {
   DELETE,
   UPDATE_MANY,
   DELETE_MANY,
+  GET_TREE,
+  GET_NODES,
+  MOVE_NODE,
 } from './fetchActions';
 
 const sanitizeResource = (data = {}) => {
@@ -60,6 +63,7 @@ const sanitizeResource = (data = {}) => {
 
 export default (introspectionResults) => (aorFetchType, resource) => (res) => {
   const response = res.data;
+  console.log('responseParser:aorFetchType', aorFetchType);
 
   switch (aorFetchType) {
     case GET_MANY_REFERENCE:
@@ -67,6 +71,19 @@ export default (introspectionResults) => (aorFetchType, resource) => (res) => {
       return {
         data: response.items.map(sanitizeResource),
         total: response.total.aggregate.count,
+      };
+    case GET_TREE:
+      return {
+        data: response.items.map(sanitizeResource),
+      };
+    case GET_NODES:
+      return {
+        data: response.items.map(sanitizeResource),
+      };
+
+    case MOVE_NODE:
+      return {
+        data: response.items.map(sanitizeResource),
       };
 
     case GET_MANY:

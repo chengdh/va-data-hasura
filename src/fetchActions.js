@@ -27,11 +27,18 @@ export const GET_TREE = 'getTree';
 export const GET_NODES = 'getNodes';
 export const MOVE_NODE = 'moveNode';
 
-export const fetchActionsWithRecordResponse = [GET_ONE, CREATE, UPDATE];
+export const fetchActionsWithRecordResponse = [
+  GET_ONE,
+  CREATE,
+  UPDATE,
+  MOVE_NODE,
+];
 export const fetchActionsWithArrayOfIdentifiedRecordsResponse = [
   GET_LIST,
   GET_MANY,
   GET_MANY_REFERENCE,
+  GET_TREE,
+  GET_NODES,
 ];
 export const fetchActionsWithArrayOfRecordsResponse = [
   ...fetchActionsWithArrayOfIdentifiedRecordsResponse,
@@ -58,6 +65,12 @@ export const sanitizeFetchType = (fetchType) => {
       return 'updateMany';
     case DELETE:
       return 'delete';
+    case GET_TREE:
+      return 'getTree';
+    case GET_NODES:
+      return 'getNodes';
+    case MOVE_NODE:
+      return 'moveNode';
     case DELETE_MANY:
       return 'deleteMany';
     default:

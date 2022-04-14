@@ -180,6 +180,11 @@ export const buildGqlQuery =
     const args = buildArgs(queryType, variables);
     const metaArgs = buildMetaArgs(queryType, metaVariables, aorFetchType);
     const fields = buildFields(resource.type, aorFetchType);
+
+    //NOTE:如果GET_TREE 或者 GET_NODES请求，则需要include children字段
+    if (aorFetchType === GET_TREE || aorFetchType === GET_NODES) {
+      includeResourceNames.push('children');
+    }
     console.log('include', includeResourceNames);
     for (let resourceName of includeResourceNames) {
       console.log('introspectionResults', introspectionResults);
@@ -189,7 +194,7 @@ export const buildGqlQuery =
           pluralize(r.type.name, 2) == resourceName
       );
 
-      //如果找不到,可能是复数形式,将起转换为单数试试
+      //如果找不到,可能是复数形式,将其转换为单数试试
       console.log('nestResource', nestResource);
       if (nestResource) {
         const nestFields = buildFields(nestResource.type, aorFetchType);
@@ -209,9 +214,7 @@ export const buildGqlQuery =
     if (
       aorFetchType === GET_LIST ||
       aorFetchType === GET_MANY ||
-      aorFetchType === GET_MANY_REFERENCE ||
-      aorFetchType === GET_TREE ||
-      aorFetchType === GET_NODES
+      aorFetchType === GET_MANY_REFERENCE
     ) {
       return gqlTypes.document([
         gqlTypes.operationDefinition(
@@ -240,6 +243,24 @@ export const buildGqlQuery =
                   ])
                 ),
               ])
+            ),
+          ]),
+          gqlTypes.name(queryType.name),
+          apolloArgs
+        ),
+      ]);
+    }
+    if (aorFetchType === GET_TREE || aorFetchType === GET_NODES) {
+      return gqlTypes.document([
+        gqlTypes.operationDefinition(
+          'query',
+          gqlTypes.selectionSet([
+            gqlTypes.field(
+              gqlTypes.name(queryType.name),
+              gqlTypes.name('items'),
+              args,
+              null,
+              gqlTypes.selectionSet(fields)
             ),
           ]),
           gqlTypes.name(queryType.name),
