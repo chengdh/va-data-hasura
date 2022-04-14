@@ -54,12 +54,32 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) => {
     finalType.kind == TypeKind.INTERFACE
   ) {
     let nestField = buildFields(includeResource.type);
-    let childrenField = gqlTypes.field(
+
+    //level 3
+    let childrenFieldLevel3 = gqlTypes.field(
       gqlTypes.name('children'),
       null,
       null,
       null,
       gqlTypes.selectionSet([...nestField])
+    );
+
+    //level 2
+    let childrenFieldLevel2 = gqlTypes.field(
+      gqlTypes.name('children'),
+      null,
+      null,
+      null,
+      gqlTypes.selectionSet([...nestField, childrenFieldLevel3])
+    );
+
+    //level 1
+    let childrenField = gqlTypes.field(
+      gqlTypes.name('children'),
+      null,
+      null,
+      null,
+      gqlTypes.selectionSet([...nestField, childrenFieldLevel2])
     );
 
     nestField.push(childrenField);
