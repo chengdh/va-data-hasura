@@ -280,7 +280,7 @@ export const buildGqlQuery =
               gqlTypes.name('items'),
               args,
               null,
-              gqlTypes.selectionSet(fields)
+              gqlTypes.selectionSet([...fields, ...includeFields])
             ),
           ]),
           gqlTypes.name(queryType.name),
