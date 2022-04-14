@@ -38,7 +38,8 @@ export const buildFragments = (introspectionResults) => (possibleTypes) =>
     ];
   }, []);
 export const buildTreeChildrenFields = (introspectionResults, rootType) => {
-  field = rootType.fields.find((f) => f.name === 'children');
+  let field = rootType.fields.find((f) => f.name === 'children');
+  if (!field) return [];
   const finalType = getFinalType(field.type);
   //获取introspectionResults
   const includeResource = introspectionResults.resources.find(
