@@ -46,7 +46,7 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) => {
     (r) => r.type.name === finalType.name
   );
   if (!includeResource) {
-    return acc;
+    return [];
   }
 
   if (
@@ -105,8 +105,6 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) => {
     );
     return [gqlField];
   }
-
-  return acc;
 };
 export const buildIncludeFields = (
   introspectionResults,
