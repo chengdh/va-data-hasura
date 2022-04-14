@@ -53,42 +53,53 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) => {
     finalType.kind == TypeKind.OBJECT ||
     finalType.kind == TypeKind.INTERFACE
   ) {
-    let nestField = buildFields(includeResource.type);
+    let currentFields = (rootNestField = buildFields(includeResource.type));
+    //NOTE 笨方法,只能手动
+    for (let i = 1; i < 10; i++) {
+      let childrenField = gqlTypes.field(
+        gqlTypes.name('children'),
+        null,
+        null,
+        null,
+        gqlTypes.selectionSet(currentFields)
+      );
+      currentFields = [...currentFields, childrenField];
+    }
 
-    //level 3
-    let childrenFieldLevel3 = gqlTypes.field(
-      gqlTypes.name('children'),
-      null,
-      null,
-      null,
-      gqlTypes.selectionSet([...nestField])
-    );
+    // //level 3
+    // let childrenFieldLevel3 = gqlTypes.field(
+    //   gqlTypes.name('children'),
+    //   null,
+    //   null,
+    //   null,
+    //   gqlTypes.selectionSet([...nestField])
+    // );
 
-    //level 2
-    let childrenFieldLevel2 = gqlTypes.field(
-      gqlTypes.name('children'),
-      null,
-      null,
-      null,
-      gqlTypes.selectionSet([...nestField, childrenFieldLevel3])
-    );
+    // //level 2
+    // let childrenFieldLevel2 = gqlTypes.field(
+    //   gqlTypes.name('children'),
+    //   null,
+    //   null,
+    //   null,
+    //   gqlTypes.selectionSet([...nestField, childrenFieldLevel3])
+    // );
 
-    //level 1
-    let childrenField = gqlTypes.field(
-      gqlTypes.name('children'),
-      null,
-      null,
-      null,
-      gqlTypes.selectionSet([...nestField, childrenFieldLevel2])
-    );
+    // //level 1
+    // let childrenField = gqlTypes.field(
+    //   gqlTypes.name('children'),
+    //   null,
+    //   null,
+    //   null,
+    //   gqlTypes.selectionSet([...nestField, childrenFieldLevel2])
+    // );
 
-    nestField.push(childrenField);
+    // nestField.push(childrenField);
     let gqlField = gqlTypes.field(
       gqlTypes.name(field.name),
       null,
       null,
       null,
-      gqlTypes.selectionSet(nestField)
+      gqlTypes.selectionSet(currentFields)
     );
     return [gqlField];
   }
