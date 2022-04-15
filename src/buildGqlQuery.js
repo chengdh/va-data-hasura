@@ -410,7 +410,7 @@ export const buildGqlQuery =
               null,
               gqlTypes.selectionSet([
                 gqlTypes.field(
-                  gqlTypes.name('items'),
+                  gqlTypes.name('returning'),
                   null,
                   null,
                   null,

@@ -82,9 +82,7 @@ export default (introspectionResults) => (aorFetchType, resource) => (res) => {
       };
 
     case MOVE_NODE:
-      return {
-        data: response.items.map(sanitizeResource),
-      };
+      return { data: sanitizeResource(response.data.returning[0]) };
 
     case GET_MANY:
       return { data: response.items.map(sanitizeResource) };
