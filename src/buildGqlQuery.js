@@ -56,7 +56,7 @@ export const buildTreeChildrenFields = (introspectionResults, rootType) => {
     let rootFields = buildFields(includeResource.type);
     let currentFields = [...rootFields];
     let childrenField;
-    //NOTE 笨方法,只能手动
+    //NOTE 笨方法,只能手动,最多支持9级结构
     for (let i = 1; i < 10; i++) {
       childrenField = gqlTypes.field(
         gqlTypes.name('children'),
@@ -371,7 +371,8 @@ export const buildGqlQuery =
       aorFetchType === UPDATE ||
       aorFetchType === UPDATE_MANY ||
       aorFetchType === DELETE ||
-      aorFetchType === DELETE_MANY
+      aorFetchType === DELETE_MANY ||
+      aorFetchType === MOVE_NODE
     ) {
       return gqlTypes.document([
         gqlTypes.operationDefinition(
