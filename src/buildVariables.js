@@ -216,7 +216,7 @@ const buildMoveNodeVariables =
         }
       }
     }
-    return Object.keys(params.data).reduce((acc, key) => {
+    return Object.keys(moveNodeParams.data).reduce((acc, key) => {
       // If hasura permissions do not allow a field to be updated like (id),
       // we are not allowed to put it inside the variables
       // RA passes the whole previous Object here
@@ -226,12 +226,6 @@ const buildMoveNodeVariables =
       // not present inside it
       if (permitted_fields && !permitted_fields.includes(key)) return acc;
 
-      if (
-        params.previousData &&
-        params.data[key] === params.previousData[key]
-      ) {
-        return acc;
-      }
       return reducer(acc, key);
     }, {});
   };
