@@ -63,7 +63,6 @@ const sanitizeResource = (data = {}) => {
 
 export default (introspectionResults) => (aorFetchType, resource) => (res) => {
   const response = res.data;
-  console.log('responseParser:aorFetchType', aorFetchType);
 
   switch (aorFetchType) {
     case GET_MANY_REFERENCE:

@@ -23020,7 +23020,6 @@ module.exports = (function (e) {
                                 (d = b.sent()), (b.label = 2);
                               case 2:
                                 return (
-                                  console.log('introspectionResults', d),
                                   (r = u(d)),
                                   (i = a()(l, ''.concat(e, '.').concat(n))),
                                   (c = i
@@ -23390,15 +23389,12 @@ module.exports = (function (e) {
             y = r(u, c),
             v = n(u, d, s),
             m = t(a.type, s);
-          console.log('include', l);
           for (let n of l) {
-            console.log('introspectionResults', e);
             const r = e.resources.find(
               (e) => e.type.name === n || Xi(e.type.name, 2) == n
             );
             if ((console.log('nestResource', r), r)) {
               const e = t(r.type, s);
-              console.log('nestFields', e);
               let i = $i.field(
                 $i.name(n),
                 null,
@@ -23409,90 +23405,87 @@ module.exports = (function (e) {
               m.push(i);
             }
           }
-          return (
-            console.log('fields', m),
-            'getList' === s ||
+          return 'getList' === s ||
             'getMany' === s ||
             'getManyReference' === s ||
             'getTree' === s ||
             'getNodes' === s
-              ? $i.document([
-                  $i.operationDefinition(
-                    'query',
-                    $i.selectionSet([
-                      $i.field(
-                        $i.name(u.name),
-                        $i.name('items'),
-                        y,
-                        null,
-                        $i.selectionSet(m)
-                      ),
-                      $i.field(
-                        $i.name(o(u.name)),
-                        $i.name('total'),
-                        v,
-                        null,
-                        $i.selectionSet([
-                          $i.field(
-                            $i.name('aggregate'),
-                            null,
-                            null,
-                            null,
-                            $i.selectionSet([$i.field($i.name('count'))])
-                          ),
-                        ])
-                      ),
-                    ]),
-                    $i.name(u.name),
-                    h
-                  ),
-                ])
-              : 'create' === s ||
-                'update' === s ||
-                'updateMany' === s ||
-                'delete' === s ||
-                'deleteMany' === s
-              ? $i.document([
-                  $i.operationDefinition(
-                    'mutation',
-                    $i.selectionSet([
-                      $i.field(
-                        $i.name(u.name),
-                        $i.name('data'),
-                        y,
-                        null,
-                        $i.selectionSet([
-                          $i.field(
-                            $i.name('returning'),
-                            null,
-                            null,
-                            null,
-                            $i.selectionSet(m)
-                          ),
-                        ])
-                      ),
-                    ]),
-                    $i.name(u.name),
-                    h
-                  ),
-                ])
-              : $i.document([
-                  $i.operationDefinition(
-                    'query',
-                    $i.selectionSet([
-                      $i.field(
-                        $i.name(u.name),
-                        $i.name('returning'),
-                        y,
-                        null,
-                        $i.selectionSet(m)
-                      ),
-                    ]),
-                    $i.name(u.name),
-                    h
-                  ),
-                ])
-          );
+            ? $i.document([
+                $i.operationDefinition(
+                  'query',
+                  $i.selectionSet([
+                    $i.field(
+                      $i.name(u.name),
+                      $i.name('items'),
+                      y,
+                      null,
+                      $i.selectionSet(m)
+                    ),
+                    $i.field(
+                      $i.name(o(u.name)),
+                      $i.name('total'),
+                      v,
+                      null,
+                      $i.selectionSet([
+                        $i.field(
+                          $i.name('aggregate'),
+                          null,
+                          null,
+                          null,
+                          $i.selectionSet([$i.field($i.name('count'))])
+                        ),
+                      ])
+                    ),
+                  ]),
+                  $i.name(u.name),
+                  h
+                ),
+              ])
+            : 'create' === s ||
+              'update' === s ||
+              'updateMany' === s ||
+              'delete' === s ||
+              'deleteMany' === s
+            ? $i.document([
+                $i.operationDefinition(
+                  'mutation',
+                  $i.selectionSet([
+                    $i.field(
+                      $i.name(u.name),
+                      $i.name('data'),
+                      y,
+                      null,
+                      $i.selectionSet([
+                        $i.field(
+                          $i.name('returning'),
+                          null,
+                          null,
+                          null,
+                          $i.selectionSet(m)
+                        ),
+                      ])
+                    ),
+                  ]),
+                  $i.name(u.name),
+                  h
+                ),
+              ])
+            : $i.document([
+                $i.operationDefinition(
+                  'query',
+                  $i.selectionSet([
+                    $i.field(
+                      $i.name(u.name),
+                      $i.name('returning'),
+                      y,
+                      null,
+                      $i.selectionSet(m)
+                    ),
+                  ]),
+                  $i.name(u.name),
+                  h
+                ),
+              ]);
         };
     const io = (e, t, n) => (r) => {
       const i = r.resources.map((e) => e.type.name);
