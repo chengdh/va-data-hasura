@@ -189,7 +189,52 @@ const typeAwareKeyValueReducer =
         }
       : acc;
   };
+const buildMoveNodeVariables =
+  (introspectionResults) => (resource, aorFetchType, params, queryType) => {
+    //{ source: Object, destination: Object, position: int }
+    moveNodeParams = {
+      data: {
+        position: params.position,
+        parent_id: params.destination.id,
+      },
+    };
+    const reducer = typeAwareKeyValueReducer(
+      introspectionResults,
+      resource,
+      moveNodeParams
+    );
+    let permitted_fields = null;
+    const resource_name = resource.type.name;
+    if (resource_name) {
+      let inputType = introspectionResults.types.find(
+        (obj) => obj.name === `${resource_name}_set_input`
+      );
+      if (inputType) {
+        let inputTypeFields = inputType.inputFields;
+        if (inputTypeFields) {
+          permitted_fields = inputTypeFields.map((obj) => obj.name);
+        }
+      }
+    }
+    return Object.keys(params.data).reduce((acc, key) => {
+      // If hasura permissions do not allow a field to be updated like (id),
+      // we are not allowed to put it inside the variables
+      // RA passes the whole previous Object here
+      // https://github.com/marmelab/react-admin/issues/2414#issuecomment-428945402
 
+      // Fetch permitted fields from *_set_input INPUT_OBJECT and filter out any key
+      // not present inside it
+      if (permitted_fields && !permitted_fields.includes(key)) return acc;
+
+      if (
+        params.previousData &&
+        params.data[key] === params.previousData[key]
+      ) {
+        return acc;
+      }
+      return reducer(acc, key);
+    }, {});
+  };
 const buildUpdateVariables =
   (introspectionResults) => (resource, aorFetchType, params, queryType) => {
     const reducer = typeAwareKeyValueReducer(
@@ -365,6 +410,16 @@ export default (introspectionResults) =>
             queryType
           ),
           where: { id: { _in: params.ids } },
+        };
+      case MOVE_NODE:
+        return {
+          _set: buildMoveNodeVariables(introspectionResults)(
+            resource,
+            aorFetchType,
+            params,
+            queryType
+          ),
+          where: { id: { _eq: params.source.id } },
         };
     }
   };
