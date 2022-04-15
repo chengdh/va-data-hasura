@@ -139,7 +139,7 @@ const buildGetListVariables =
     //process getNodes
     let whereParentObj = {};
     if (params.parent) {
-      whereParentObj = buildFilter(resource, { parent: params.parent });
+      whereParentObj = buildFilter(resource, { parent_id: params.parent.id });
       whereObj['_and'] = [...whereObj['_and'], ...whereParentObj['_and']];
     }
 
