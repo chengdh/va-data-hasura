@@ -371,8 +371,7 @@ export const buildGqlQuery =
       aorFetchType === UPDATE ||
       aorFetchType === UPDATE_MANY ||
       aorFetchType === DELETE ||
-      aorFetchType === DELETE_MANY ||
-      aorFetchType === MOVE_NODE
+      aorFetchType === DELETE_MANY
     ) {
       return gqlTypes.document([
         gqlTypes.operationDefinition(
@@ -386,6 +385,32 @@ export const buildGqlQuery =
               gqlTypes.selectionSet([
                 gqlTypes.field(
                   gqlTypes.name('returning'),
+                  null,
+                  null,
+                  null,
+                  gqlTypes.selectionSet(fields)
+                ),
+              ])
+            ),
+          ]),
+          gqlTypes.name(queryType.name),
+          apolloArgs
+        ),
+      ]);
+    }
+    if (aorFetchType === MOVE_NODE) {
+      return gqlTypes.document([
+        gqlTypes.operationDefinition(
+          'mutation',
+          gqlTypes.selectionSet([
+            gqlTypes.field(
+              gqlTypes.name(queryType.name),
+              gqlTypes.name('data'),
+              args,
+              null,
+              gqlTypes.selectionSet([
+                gqlTypes.field(
+                  gqlTypes.name('items'),
                   null,
                   null,
                   null,
