@@ -137,10 +137,12 @@ const buildGetListVariables =
     const whereObj = buildFilter(resource, filterObj, customFilters);
 
     //process getNodes
-    let whereParentObj = {};
     if (params.parent) {
-      whereParentObj = buildFilter(resource, { parent_id: params.parent.id });
-      whereObj['_and'] = [...whereObj['_and'], ...whereParentObj['_and']];
+      for (let con of whereObj['_and']) {
+        if (con['parent_id']) {
+          con['parent_id'] = { _eq: params.parent.id };
+        }
+      }
     }
 
     result['where'] = whereObj;
