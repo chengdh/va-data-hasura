@@ -192,7 +192,7 @@ const typeAwareKeyValueReducer =
 const buildMoveNodeVariables =
   (introspectionResults) => (resource, aorFetchType, params, queryType) => {
     //{ source: Object, destination: Object, position: int }
-    moveNodeParams = {
+    let moveNodeParams = {
       data: {
         position: params.position,
         parent_id: params.destination.id,
